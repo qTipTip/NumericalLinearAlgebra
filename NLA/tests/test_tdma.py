@@ -1,7 +1,8 @@
 from unittest import TestCase
+
 import numpy as np
 
-from NumericalLinearAlgebra.matrices.matrices import tdma_diagonals, tdma_lu, tdma_solve
+from NLA.matrices import tdma_diagonals, tdma_lu, tdma_solve
 
 
 class TestTdma_diagonals(TestCase):
@@ -26,10 +27,10 @@ class TestTdma_diagonals(TestCase):
     def test_tdma_diagonals_typeerror(self):
         """ Check that the function tdma_diagonals raises a TypeError if not an ndarray"""
         A = [
-            [1, 2, 3],
-            [2, 3, 4],
-            [4, 5, 6]
-            ]
+                [1, 2, 3],
+                [2, 3, 4],
+                [4, 5, 6]
+        ]
 
         self.assertRaises(TypeError, tdma_diagonals, A)
 
