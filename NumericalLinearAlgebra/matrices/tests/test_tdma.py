@@ -1,7 +1,7 @@
 from unittest import TestCase
 import numpy as np
 
-from NumericalLinearAlgebra.matrices.matrices import tdma_diagonals, tdma_lu
+from NumericalLinearAlgebra.matrices.matrices import tdma_diagonals, tdma_lu, tdma_solve
 
 
 class TestTdma_diagonals(TestCase):
@@ -65,3 +65,17 @@ class TestTdma_diagonals(TestCase):
         U = np.diag(u) + np.diag(c, 1)
 
         np.testing.assert_almost_equal(A, L.dot(U))
+
+    def test_tdma_solve(self):
+        """ Checks whether tdma_solve returns the correct solution for a 3x3 test system"""
+
+        n = 3
+        a = np.full(n-1, 1, dtype=np.float64)
+        c = np.full(n-1, 1, dtype=np.float64)
+        d = np.full(n, 4, dtype=np.float64)
+        b = np.full(n, 1, dtype=np.float64)
+
+        expected_x = np.array([3.0/14, 1.0/7, 3.0/14])
+        computed_x = tdma_solve(a, d, c, b)
+
+        np.testing.assert_almost_equal(expected_x, computed_x)

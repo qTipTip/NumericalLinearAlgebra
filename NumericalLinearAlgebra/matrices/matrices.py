@@ -35,3 +35,30 @@ def tdma_lu(a, d, c):
         u[k+1] = d[k+1] - l[k] * c[k]
 
     return l, u
+
+def tdma_solve(a, d, c, b):
+    """
+    Solves a tri-diagonal linear system with diagonals a, d, c and right hand side b.
+    :param a: sub-diagonal
+    :param d: main diagonal
+    :param c: super-diagonal
+    :param b: right hand side
+    :return: the solution x to the system Ax = b.
+    """
+
+    x = b
+    n = len(d)
+
+    # factorize
+    l, u = tdma_lu(a, d, c)
+
+    # forward sweep
+    for k in range(1, n):
+        x[k] = b[k] - l[k-1] * x[k-1]
+
+    # backward sweep
+    x[n-1] = x[n-1] / u[n-1]
+    for k in range(n-2, -1, -1):
+        x[k] = (x[k] - c[k] * x[k+1]) / u[k]
+
+    return x
