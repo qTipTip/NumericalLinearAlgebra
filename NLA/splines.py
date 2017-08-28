@@ -62,7 +62,7 @@ def find_subintervals(t, x):
     m = len(x)
 
     if k < 2:
-        # if the knot set is trivial, we just return zero
+        # if the knot set is trivial, we just return zeros
         return np.zeros(m)
 
     else:
@@ -74,3 +74,23 @@ def find_subintervals(t, x):
 
         return arr
 
+def spline_evaluation(t, c, x):
+    """
+    Given a set of knots t, the corresponding spline coefficients c, and a set of evaluation points x, return a set
+    of spline evaluations.
+    :param t: knot values
+    :param c: spline coefficients
+    :param x: set of points of evaluation, the last point cannot be equal to the endpoint of the interpolation interval.
+    :return: set of spline evaluations
+    """
+
+    m = len(x)
+    idx = find_subintervals(t, x)
+    s_values = np.zeros(m)
+    for i in range(m):
+        k = idx[i]
+        x_val = x[i] - t[k]  # the shifted polynomials
+        coefficients = c[k, :]
+        s_values[i] = np.array([1, x_val, x_val**2, x_val**3]).dot(coefficients)
+
+    return s_values
