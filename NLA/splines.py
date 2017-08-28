@@ -46,3 +46,31 @@ def spline_interpolation(a, b, y, mu0, munp1):
     c[:, 3] = (mu[1:n + 1] - mu[:n]) / (6 * h)
 
     return x, c
+
+def find_subintervals(t, x):
+    """
+    Given a set of real numbers 't', and a real value x, we compute the integer i such that
+    t[i] <= x < t[i+1]. If x is a list of numbers, we compute a corresponding vector of indices
+    :param knots: set of real values [t1, t2, ..., tk]
+    :param x: a real value or a vector of real values
+    :return: corresponding index, or vector of indices
+    """
+    x = np.array(x)
+    t = np.array(t)
+
+    k = len(t)
+    m = len(x)
+
+    if k < 2:
+        # if the knot set is trivial, we just return zero
+        return np.zeros(m)
+
+    else:
+        j = np.concatenate((t, x)).argsort() # indices that would sort the array
+        i = np.nonzero(j >= k) # indices of indices that are larger than the number of knots
+
+        arr = np.arange(0, m)
+        arr = (i - arr - 1)[0]
+
+        return arr
+
