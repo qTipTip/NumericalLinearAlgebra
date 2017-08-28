@@ -49,6 +49,7 @@ def tdma_solve(a, d, c, b):
     x = b
     n = len(d)
 
+
     # factorize
     l, u = tdma_lu(a, d, c)
 
