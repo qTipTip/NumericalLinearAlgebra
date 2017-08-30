@@ -49,7 +49,6 @@ def tdma_solve(a, d, c, b):
     x = b
     n = len(d)
 
-
     # factorize
     l, u = tdma_lu(a, d, c)
 
@@ -64,7 +63,7 @@ def tdma_solve(a, d, c, b):
 
     return x
 
-def forwardsolve_lower_triangular(A, b, d):
+def rforwardsolve(A, b, d):
     """
     Solves a matrix equation Ax = b where A is a d-banded matrix.
     :param A: Lower triangular d-banded matrix
@@ -82,3 +81,62 @@ def forwardsolve_lower_triangular(A, b, d):
 
     return x
 
+def rbackwardsolve(A, b, d):
+    """
+    Solves a matrix equation Ax = b where A
+    :param A: Upper triangular d-banded matrix
+    :param b: right hand side
+    :param d: band width
+    :return: solution x to Ax = b
+    """
+
+    n = len(b)
+    x = b
+    x[n-1] = b[n-1]
+
+    for k in range(n-2, -1, -1):
+        uk = min(n-1, k+d)
+
+        x[k] = (b[k] - A[k, (k+1):uk+1]) * x[k+1 : uk + 1] / A[k, k]
+
+    return x
+
+def cforwardsolve(A, b, d):
+    """
+    Solves a matrix equation Ax = b where A is a d-banded matrix.
+    :param A: Upper triangular d-banded matrix
+    :param b: right hand side
+    :param d: band width
+    :return: solution x to Ax = b
+    """
+
+    x = b
+    n = len(b)
+
+    for k in range(n-1):
+        x[k] = b[k] / A[k, k]
+        uk = min(n-1, k+d)
+        b[k+1:uk+1] = b[k+1:uk+1] - A[k+1:uk+1, k] * x[k]
+    x[n-1] = b[n-1] / A[n-1, n-1]
+
+    return x
+
+def cbackwardsolve(A, b, d):
+    """
+    Solves a matrix equation Ax = b where A
+    :param A: Upper triangular d-banded matrix
+    :param b: right hand side
+    :param d: band width
+    :return: solution x to Ax = b
+    """
+
+    x = b
+    n = len(b)
+
+    for k in range(n-1, 0, -1):
+        x[k] = b[k] / A[k, k]
+        lk = max(0, k-d)
+        b[lk : k] = b[lk : k] - A[lk : k, k] * x[k]
+    x[0] = b[0] / A[0, 0]
+
+    return x
