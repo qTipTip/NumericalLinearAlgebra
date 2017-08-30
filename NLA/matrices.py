@@ -63,3 +63,22 @@ def tdma_solve(a, d, c, b):
         x[k] = (x[k] - c[k] * x[k+1]) / u[k]
 
     return x
+
+def forwardsolve_lower_triangular(A, b, d):
+    """
+    Solves a matrix equation Ax = b where A is a d-banded matrix.
+    :param A: Lower triangular d-banded matrix
+    :param b: right hand side
+    :param d: band width
+    :return: solution x to Ax = b
+    """
+
+    n = len(b)
+    x = b
+
+    for k in range(1, n):
+        lk = max(0, k-d)
+        x[k] = (b[k] - A[k, lk : k]).dot(x[lk : (k)]) / A[k, k]
+
+    return x
+
