@@ -5,6 +5,7 @@ from NLA.matrices import rforwardsolve, rbackwardsolve, cforwardsolve, cbackward
 
 
 class TestTriangularSolves(TestCase):
+
     def test_forwardsolve_lower_triangular_rows(self):
 
         A = np.array([
