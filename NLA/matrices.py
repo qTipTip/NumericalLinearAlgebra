@@ -74,10 +74,10 @@ def rforwardsolve(A, b, d):
 
     n = len(b)
     x = b
-
+    x[0] = b[0] / A[0,0]
     for k in range(1, n):
         lk = max(0, k-d)
-        x[k] = (b[k] - A[k, lk : k]).dot(x[lk : (k)]) / A[k, k]
+        x[k] = (b[k] - A[k, lk : k].dot(x[lk : k])) / A[k, k]
 
     return x
 
@@ -140,3 +140,23 @@ def cbackwardsolve(A, b, d):
     x[0] = b[0] / A[0, 0]
 
     return x
+
+def L1U(A, d):
+    """
+    Given a banded matrix A with bandwidth d, compute the L1U factorization into two matrices L, U
+    where L has 1's along the diagonal.
+    :param A: Banded matrix A
+    :param d: band width
+    :return: L, U
+    """
+
+    n, m = A.shape
+    L = np.eye(n, n)
+    U = np.zeros((n, n))
+    U[0, 0] = A[0, 0]
+    for k in range(1, n):
+        km = max(0, k-d)
+        L[k, km:k] = np.transpose(rforwardsolve(np.transpose(U[km:k, km:k]), np.transpose(A[k, km:k]), d))
+        U[km:k+1, k]  = rforwardsolve(L[km:k+1, km:k+1], A[km:k+1, k], d)
+
+    return L, U
